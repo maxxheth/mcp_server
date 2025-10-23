@@ -1,10 +1,8 @@
 # MCP Server - Independent Model Context Protocol Server Implementation
 
-This is a standalone Model Context Protocol (MCP) server implementation extracted from the ciwg-zoho-migration project. It provides MCP server implementations for:
+This is a standalone Model Context Protocol (MCP) server implementation. It provides MCP server implementations for:
 
-- **Database Access**: Connect to source and target PostgreSQL databases
 - **Wolfram Alpha**: Query computational intelligence for mathematical and scientific answers
-- **SSH Tunneling**: Support for remote database connections via SSH
 
 ## Project Structure
 
@@ -32,7 +30,6 @@ mcp-server/
 ### Prerequisites
 
 - Go 1.21 or higher
-- PostgreSQL (for database MCP servers)
 - Wolfram Alpha API key (for Wolfram MCP server)
 
 ### Installation
@@ -45,32 +42,6 @@ go build -o mcp-server ./cmd/cli
 ```
 
 ### Usage
-
-#### Start Database MCP Server (Source)
-
-```bash
-export MCP_SOURCE_PORT=8080
-export SOURCE_DB_HOST=localhost
-export SOURCE_DB_PORT=5432
-export SOURCE_DB_USERNAME=user
-export SOURCE_DB_PASSWORD=password
-export SOURCE_DB_DATABASE=source_db
-
-./mcp-server mcp source
-```
-
-#### Start Database MCP Server (Target)
-
-```bash
-export MCP_TARGET_PORT=8082
-export TARGET_DB_HOST=localhost
-export TARGET_DB_PORT=5432
-export TARGET_DB_USERNAME=user
-export TARGET_DB_PASSWORD=password
-export TARGET_DB_DATABASE=target_db
-
-./mcp-server mcp target
-```
 
 #### Start Wolfram Alpha MCP Server
 
@@ -86,66 +57,18 @@ export MCP_WOLFRAM_PORT=8083
 ### Environment Variables
 
 #### MCP Server Ports
-- `MCP_SOURCE_PORT` - Port for source database MCP server (default: stdio)
-- `MCP_TARGET_PORT` - Port for target database MCP server (default: stdio)
 - `MCP_WOLFRAM_PORT` - Port for Wolfram Alpha MCP server (default: stdio)
-
-#### Source Database
-- `SOURCE_DB_HOST` - Database host
-- `SOURCE_DB_PORT` - Database port
-- `SOURCE_DB_USERNAME` - Database username
-- `SOURCE_DB_PASSWORD` - Database password
-- `SOURCE_DB_DATABASE` - Database name
-- `SOURCE_DB_SCHEMA` - Database schema (default: public)
-
-#### Target Database
-- `TARGET_DB_HOST` - Database host
-- `TARGET_DB_PORT` - Database port
-- `TARGET_DB_USERNAME` - Database username
-- `TARGET_DB_PASSWORD` - Database password
-- `TARGET_DB_DATABASE` - Database name
-- `TARGET_DB_SCHEMA` - Database schema (default: public)
-
-#### SSH Tunnel (Source or Target)
-- `SSH_SOURCE_REMOTE_HOST` / `SSH_TARGET_REMOTE_HOST` - SSH server host
-- `SSH_SOURCE_REMOTE_PORT` / `SSH_TARGET_REMOTE_PORT` - SSH server port
-- `SSH_SOURCE_REMOTE_USER` / `SSH_TARGET_REMOTE_USER` - SSH username
-- `SSH_SOURCE_PRIVATE_KEY_PATH` / `SSH_TARGET_PRIVATE_KEY_PATH` - Path to SSH private key
-- `SSH_SOURCE_LOCAL_PORT` / `SSH_TARGET_LOCAL_PORT` - Local port for tunnel
-- `SSH_SOURCE_HOST` / `SSH_TARGET_HOST` - Target database host (as seen from SSH server)
-- `SSH_SOURCE_PORT` / `SSH_TARGET_PORT` - Target database port (as seen from SSH server)
 
 #### Wolfram Alpha
 - `WOLFRAM_API_KEY` - API key from Wolfram Alpha (required)
 
 ## Available Tools
 
-### Database Servers (Source/Target)
-
-- **query** - Execute SQL queries on the database
-- **list_tables** - List all tables in the database
-- **table_info** - Get detailed information about a table (columns, types, constraints)
-- **row_count** - Get the number of rows in a table
-
 ### Wolfram Alpha Server
 
 - **query_wolfram** - Query Wolfram Alpha for computational answers
 
 ## Examples
-
-### Query a Database via HTTP
-
-```bash
-curl -X POST http://localhost:8080/mcp \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "method": "tools/call",
-    "params": {
-      "name": "query",
-      "arguments": {"sql": "SELECT * FROM users LIMIT 10"}
-    }
-  }'
-```
 
 ### Query Wolfram Alpha
 
@@ -192,13 +115,6 @@ Add to `~/.config/Claude/claude_desktop_config.json`:
 ```json
 {
   "mcpServers": {
-    "database-source": {
-      "command": "bash",
-      "args": [
-        "-c",
-        "MCP_SOURCE_PORT=8080 SOURCE_DB_HOST=localhost SOURCE_DB_USERNAME=user SOURCE_DB_PASSWORD=pass SOURCE_DB_DATABASE=mydb /path/to/mcp-server mcp source"
-      ]
-    },
     "wolfram-alpha": {
       "command": "bash",
       "args": [
